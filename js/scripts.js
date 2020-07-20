@@ -1,13 +1,23 @@
 
-const gallery = document.getElementById('gallery');
-
 // fetch function
 function getRandomPeople() {
-    fetch('https://randomuser.me/api/?results=12')
+    fetch('https://randomuser.me/api/?results=12') // <-- pulling 12 random users from api
         .then(res => res.json())
         .then(data => addUsers(data.results))
-    }
+}
+getRandomPeople();
 
+// listen for clicks
+function listenForClick(info, data, index) {
+    setTimeout(e => {
+        const person = document.getElementById(`${info.name.first}${info.name.last}`);
+        person.addEventListener('click', e => addModal(info, data, index));
+    },100)
+}
+
+
+// create users from data
+const gallery = document.getElementById('gallery');
 function addUsers(data) {
     const randoms = data.map((info, index) => {
         listenForClick(info, data, index)
@@ -28,7 +38,8 @@ function addUsers(data) {
     gallery.innerHTML = randoms; 
 }
 
-function addModal(info, data, index) {
+// create the modal 
+function addModal(info) {
     const div = document.createElement('div')
     div.className = 'modal-container';
 
@@ -45,8 +56,8 @@ function addModal(info, data, index) {
                     <p class="modal-text">${info.location.street.number} ${info.location.street.name}</p>
                     <p class="modal-text">${info.location.city}, ${info.location.state} ${info.location.postcode}</p>
                     <p class="modal-text">Birthday: ${info.dob.date.substring(0,10)}</p>
-                </div>`
-
+                </div>
+                `
     div.innerHTML = html;
     document.querySelector('body').appendChild(div);
 
@@ -56,16 +67,5 @@ function addModal(info, data, index) {
     });    
 }
 
-function listenForClick(info, data, index) {
-    setTimeout(e => {
-        const person = document.getElementById(`${info.name.first}${info.name.last}`);
-        person.addEventListener('click', e => addModal(info, data, index));
-    },100)
-}
 
 
-// callbacks
-getRandomPeople();
-addModal();
-listenForClick();
-handleSearch();
